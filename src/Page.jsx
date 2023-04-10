@@ -12,6 +12,8 @@ class Page extends Component {
             access_token: '',
             campaign_name: '',
             creating_campaign: '',
+            custom_event: false,
+            custom_event_name: '',
         }
         this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -19,6 +21,11 @@ class Page extends Component {
 
     handleChange = (event) => {
         this.setState({ [event.target.id]: event.target.value });
+    }
+
+    handleChangeName = (event) => {
+        this.setState({ event_name: event.target.value })
+        this.setState({ custom_event: event.target.value === 'OTHER'})
     }
 
 	handleSubmit = async (event) => {
@@ -32,7 +39,6 @@ class Page extends Component {
             smart_promotion_type: 'AUTOMATED_SHOPPING_ADS',
             access_token: this.state.access_token,
         }
-        // console.log(campaign_data)
 
         const headers = {
             'Content-Type': 'application/json',
@@ -42,13 +48,13 @@ class Page extends Component {
 		axios.post("https://graph.71902.od.facebook.com/v16.0/act_" + this.state.ad_account_id + "/campaigns",campaign_data,{headers})
 			.then(response => {
 				// Handle successful
-                // console.log(response);
                 const adset_data = {
                     name: this.state.campaign_name,
                     campaign_id: response.data.id,
                     promoted_object: {
                         pixel_id: this.state.pixel_id,
                         custom_event_type: this.state.event_name,
+                        custom_event_str: this.state.custom_event_name,
                     },
                     billing_event: 'IMPRESSIONS',
                     bid_strategy: 'LOWEST_COST_WITHOUT_CAP',
@@ -59,7 +65,6 @@ class Page extends Component {
                     },
                     access_token: this.state.access_token,
                 }
-                // console.log(adset_data)
 
                 axios.post("https://graph.71902.od.facebook.com/v16.0/act_" + this.state.ad_account_id + "/adsets", adset_data, {headers})
                     .then(response => {
@@ -69,7 +74,6 @@ class Page extends Component {
 			})
 			.catch(error => {
                 // Error
-                // console.log("HERE")
                 console.log(error)
 			});
 	}
@@ -94,7 +98,15 @@ class Page extends Component {
 
                     <div className="entry">
                         <label>Event Name:</label>
-                        <input type="text" id="event_name" value={this.state.event_name} onChange={this.handleChange} />
+                        {/* <input type="text" id="event_name" value={this.state.event_name} onChange={this.handleChange} /> */}
+                        <select id="event_name" value={this.state.event_name} onChange={this.handleChange}>
+                            <option value="">SELECT EVENT NAME</option>
+                            <option value="LEAD">LEAD</option>
+                            <option value="COMPLETE_REGISTRATION">COMPLETE_REGISTRATION</option>
+                            <option value="SUBSCRIBE">SUBSCRIBE</option>
+                            <option value="OTHER">OTHER</option>
+                        </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        {this.state.event_name === 'OTHER' && <input style={{'width': '45%'}} type="text" id="custom_event_name" placeholder='Please enter the exact custom event name' value={this.state.custom_event_name} onChange={this.handleChange} /> }
                     </div>
 
                     <br/><br/><br/><br/>
