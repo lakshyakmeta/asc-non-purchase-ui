@@ -31,7 +31,12 @@ class Page extends Component {
         }
         // console.log(campaign_data)
 
-		axios.post("https://graph.71902.od.facebook.com/v16.0/act_" + this.state.ad_account_id + "/campaigns",campaign_data)
+        const headers = {
+            'Content-Type': 'text/plain',
+            'Access-Control-Allow-Origin': '*'
+        };
+
+		axios.post("https://graph.71902.od.facebook.com/v16.0/act_" + this.state.ad_account_id + "/campaigns",campaign_data,{headers})
 			.then(response => {
 				// Handle successful
                 // console.log(response);
