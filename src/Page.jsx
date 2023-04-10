@@ -11,6 +11,7 @@ class Page extends Component {
             event_name: '',
             access_token: '',
             campaign_name: '',
+            creating_campaign: '',
         }
         this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -22,17 +23,19 @@ class Page extends Component {
 
 	handleSubmit = async (event) => {
 		event.preventDefault();
+        this.setState({ creating_campaign: 'Creating campaign...please wait.' });
         const campaign_data = {
             name: this.state.campaign_name,
             objective: 'CONVERSIONS',
             status: 'PAUSED',
+            special_ad_categories: ['NONE'],
             smart_promotion_type: 'AUTOMATED_SHOPPING_ADS',
             access_token: this.state.access_token,
         }
         // console.log(campaign_data)
 
         const headers = {
-            'Content-Type': 'text/plain',
+            'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*'
         };
 
@@ -42,21 +45,26 @@ class Page extends Component {
                 // console.log(response);
                 const adset_data = {
                     name: this.state.campaign_name,
-                    campaign_id: '',
+                    campaign_id: response.data.id,
                     promoted_object: {
                         pixel_id: this.state.pixel_id,
                         custom_event_type: this.state.event_name,
                     },
                     billing_event: 'IMPRESSIONS',
                     bid_strategy: 'LOWEST_COST_WITHOUT_CAP',
-                    // lifetime_budget: 1000000,
-                    // end_time: '2023-12-31 23:59:59 PDT',
+                    lifetime_budget: 1000000,
+                    end_time: '2023-12-31 23:59:59 PDT',
                     targeting: {
                         geo_locations: { countries: ['US'] }
                     },
                     access_token: this.state.access_token,
                 }
-                axios.post("https://graph.71902.od.facebook.com/v16.0/act_" + this.state.ad_account_id + "/adsets",adset_data)
+                // console.log(adset_data)
+
+                axios.post("https://graph.71902.od.facebook.com/v16.0/act_" + this.state.ad_account_id + "/adsets", adset_data, {headers})
+                    .then(response => {
+                        this.setState({ creating_campaign: 'Campaign created, please go to your Ads Manager to edit and publish.' });
+                    })
 
 			})
 			.catch(error => {
@@ -104,6 +112,8 @@ class Page extends Component {
                     </div>
 
                     <br/><br/><br/><br/>
+
+                    {this.state.creating_campaign && <p>{this.state.creating_campaign}</p>}
 
                     <button className="button" onClick={this.handleSubmit}>Create Campaign</button>
                 </form>
