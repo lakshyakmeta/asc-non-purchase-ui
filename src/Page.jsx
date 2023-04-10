@@ -45,7 +45,7 @@ class Page extends Component {
             'Access-Control-Allow-Origin': '*'
         };
 
-		axios.post("https://graph.71902.od.facebook.com/v16.0/act_" + this.state.ad_account_id + "/campaigns",campaign_data,{headers})
+		axios.post("https://graph.facebook.com/v16.0/act_" + this.state.ad_account_id + "/campaigns",campaign_data,{headers})
 			.then(response => {
 				// Handle successful
                 const adset_data = {
@@ -66,7 +66,7 @@ class Page extends Component {
                     access_token: this.state.access_token,
                 }
 
-                axios.post("https://graph.71902.od.facebook.com/v16.0/act_" + this.state.ad_account_id + "/adsets", adset_data, {headers})
+                axios.post("https://graph.facebook.com/v16.0/act_" + this.state.ad_account_id + "/adsets", adset_data, {headers})
                     .then(response => {
                         this.setState({ creating_campaign: 'Campaign created, please go to your Ads Manager to edit and publish.' });
                     })
