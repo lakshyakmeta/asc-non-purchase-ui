@@ -8,40 +8,20 @@ class Page extends Component {
 		this.state = { 
             ad_account_id: '',
             pixel_id: '',
+            event_name: '',
             access_token: '',
             campaign_name: '',
-            daily_budget: '',
-            existing_customer_budget_percentage: '',
         }
+        this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
-    handleChangeAdAccount = (event) => {
-        this.setState({ ad_account_id: event.target.value });
-    }
-
-    handleChangePixel = (event) => {
-        this.setState({ pixel_id: event.target.value });
-    }
-
-    handleChangeAccessToken = (event) => {
-        this.setState({ access_token: event.target.value });
-    }
-
-    handleChangeCampaignName = (event) => {
-        this.setState({ campaign_name: event.target.value });
-    }
-
-    handleChangeDailyBudget = (event) => {
-        this.setState({ daily_budget: event.target.value });
-    }
-
-    handleChangeExistingCustPer = (event) => {
-        this.setState({ existing_customer_budget_percentage: event.target.value });
+    handleChange = (event) => {
+        this.setState({ [event.target.id]: event.target.value });
     }
 
 	handleSubmit = async (event) => {
-		
+		event.preventDefault();
         const campaign_data = {
             name: this.state.campaign_name,
             objective: 'CONVERSIONS',
@@ -49,35 +29,34 @@ class Page extends Component {
             smart_promotion_type: 'AUTOMATED_SHOPPING_ADS',
             access_token: this.state.access_token,
         }
+        // console.log(campaign_data)
 
-		axios.post("https://graph.73242.od.facebook.com/v16.0/act_" + this.state.ad_account_id + "/campaigns",campaign_data)
+		axios.post("https://graph.71902.od.facebook.com/v16.0/act_" + this.state.ad_account_id + "/campaigns",campaign_data)
 			.then(response => {
 				// Handle successful
-                console.log(response);
+                // console.log(response);
                 const adset_data = {
                     name: this.state.campaign_name,
                     campaign_id: '',
                     promoted_object: {
                         pixel_id: this.state.pixel_id,
-                        custom_event_type: 'LEAD'
+                        custom_event_type: this.state.event_name,
                     },
                     billing_event: 'IMPRESSIONS',
                     bid_strategy: 'LOWEST_COST_WITHOUT_CAP',
-                    lifetime_budget: 1000000,
-                    end_time: '2023-12-31 23:59:59 PDT',
+                    // lifetime_budget: 1000000,
+                    // end_time: '2023-12-31 23:59:59 PDT',
                     targeting: {
                         geo_locations: { countries: ['US'] }
                     },
                     access_token: this.state.access_token,
-                    daily_budget: this.state.daily_budget,
-                    existing_customer_budget_percentage: this.state.existing_customer_budget_percentage,
                 }
-                // axios.post("https://graph.73242.od.facebook.com/v16.0/act_" + this.state.ad_account_id + "/adsets",adset_data)
+                axios.post("https://graph.71902.od.facebook.com/v16.0/act_" + this.state.ad_account_id + "/adsets",adset_data)
 
 			})
 			.catch(error => {
                 // Error
-                console.log("HERE")
+                // console.log("HERE")
                 console.log(error)
 			});
 	}
@@ -88,47 +67,40 @@ class Page extends Component {
                 <form className="form">
                     <div className="entry">
                         <label>Ad Account ID:</label>
-                        <input type="text" name="ad_account_id" value={this.state.ad_account_id} onChange={this.handleChangeAdAccount} />
+                        <input type="text" id="ad_account_id" value={this.state.ad_account_id} onChange={this.handleChange} />
                     </div>
 
                     <br/><br/><br/><br/>
 
                     <div className="entry">
                         <label>Pixel ID:</label>
-                        <input type="text" name="pixel_id" value={this.state.pixel_id} onChange={this.handleChangePixel} />
+                        <input type="text" id="pixel_id" value={this.state.pixel_id} onChange={this.handleChange} />
+                    </div>
+
+                    <br/><br/><br/><br/>
+
+                    <div className="entry">
+                        <label>Event Name:</label>
+                        <input type="text" id="event_name" value={this.state.event_name} onChange={this.handleChange} />
                     </div>
 
                     <br/><br/><br/><br/>
 
                     <div className="entry">
                         <label>Access Token:</label>
-                        <input type="text" name="access_token" value={this.state.access_token} onChange={this.handleChangeAccessToken} />
+                        <input type="text" id="access_token" value={this.state.access_token} onChange={this.handleChange} />
                     </div>
 
                     <br/><br/><br/><br/>
 
                     <div className="entry">
                         <label>Campaign Name:</label>
-                        <input type="text" name="campaign_name" value={this.state.campaign_name} onChange={this.handleChangeCampaignName} />
+                        <input type="text" id="campaign_name" value={this.state.campaign_name} onChange={this.handleChange} />
                     </div>
 
                     <br/><br/><br/><br/>
 
-                    <div className="entry">
-                        <label>Daily Budget:</label>
-                        <input type="text" name="daily_budget" value={this.state.daily_budget} onChange={this.handleChangeDailyBudget} />
-                    </div>
-
-                    <br/><br/><br/><br/>
-
-                    <div className="entry">
-                        <label>Existing Customer Budget Percentage:</label>
-                        <input type="text" name="existing_customer_budget_percentage" value={this.state.existing_customer_budget_percentage} onChange={this.handleChangeExistingCustPer} />
-                    </div>
-
-                    <br/><br/><br/><br/>
-
-                    <button className="button">Create Campaign</button>
+                    <button className="button" onClick={this.handleSubmit}>Create Campaign</button>
                 </form>
 			</>
 		);
