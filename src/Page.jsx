@@ -14,6 +14,10 @@ class Page extends Component {
             creating_campaign: '',
             custom_event: false,
             custom_event_name: '',
+            errorRequest: false,
+            errorMessage: '',
+            validEntries: false,
+            invalidMessage: '',
         }
         this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -28,54 +32,82 @@ class Page extends Component {
         this.setState({ custom_event: event.target.value === 'OTHER'})
     }
 
+    validateEntries = () => {
+        if (this.state.ad_account_id === '' || this.state.ad_account_id === undefined || 
+            this.state.pixel_id === '' || this.state.pixel_id === undefined || 
+            this.state.event_name === '' || this.state.event_name === undefined || 
+            this.state.access_token === '' || this.state.access_token === undefined || 
+            this.state.campaign_name === '' || this.state.campaign_name === undefined ) {
+                return false;
+        } else {
+            return true;
+        }
+            
+    }
+
 	handleSubmit = async (event) => {
 		event.preventDefault();
-        this.setState({ creating_campaign: 'Creating campaign...please wait.' });
-        const campaign_data = {
-            name: this.state.campaign_name,
-            objective: 'CONVERSIONS',
-            status: 'PAUSED',
-            special_ad_categories: ['NONE'],
-            smart_promotion_type: 'AUTOMATED_SHOPPING_ADS',
-            access_token: this.state.access_token,
+        if (this.validateEntries()) {
+            this.setState({ validEntries: false })
+            this.setState({ invalidMessage: '' })
+            this.setState({ creating_campaign: 'Creating campaign...please wait.' });
+            const campaign_data = {
+                name: this.state.campaign_name,
+                objective: 'CONVERSIONS',
+                status: 'PAUSED',
+                special_ad_categories: ['NONE'],
+                smart_promotion_type: 'AUTOMATED_SHOPPING_ADS',
+                access_token: this.state.access_token,
+            }
+
+            const headers = {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            };
+
+            axios.post("https://graph.facebook.com/v16.0/act_" + this.state.ad_account_id + "/campaigns",campaign_data,{headers})
+                .then(response => {
+                    // Handle successful
+                    const adset_data = {
+                        name: this.state.campaign_name,
+                        campaign_id: response.data.id,
+                        promoted_object: {
+                            pixel_id: this.state.pixel_id,
+                            custom_event_type: this.state.event_name,
+                            custom_event_str: this.state.custom_event_name,
+                        },
+                        billing_event: 'IMPRESSIONS',
+                        bid_strategy: 'LOWEST_COST_WITHOUT_CAP',
+                        lifetime_budget: 1000000,
+                        end_time: '2023-12-31 23:59:59 PDT',
+                        targeting: {
+                            geo_locations: { countries: ['US'] }
+                        },
+                        access_token: this.state.access_token,
+                    }
+
+                    axios.post("https://graph.facebook.com/v16.0/act_" + this.state.ad_account_id + "/adsets", adset_data, {headers})
+                        .then(response => {
+                            this.setState({ creating_campaign: 'Campaign created, please go to your Ads Manager to edit and publish.' });
+                            this.setState({ errorRequest: false })
+                            this.setState({ errorMessage: '' })
+                        })
+                        .catch(error => {
+                            // Error
+                            this.setState({ errorRequest: true })
+                            this.setState({ errorMessage: error })
+                        })
+
+                })
+                .catch(error => {
+                    // Error
+                    this.setState({ errorRequest: true })
+                    this.setState({ errorMessage: error })
+                });
+        } else {
+            this.setState({ validEntries: true })
+            this.setState({ invalidMessage: 'Please enter all the required fields...!' })
         }
-
-        const headers = {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
-        };
-
-		axios.post("https://graph.facebook.com/v16.0/act_" + this.state.ad_account_id + "/campaigns",campaign_data,{headers})
-			.then(response => {
-				// Handle successful
-                const adset_data = {
-                    name: this.state.campaign_name,
-                    campaign_id: response.data.id,
-                    promoted_object: {
-                        pixel_id: this.state.pixel_id,
-                        custom_event_type: this.state.event_name,
-                        custom_event_str: this.state.custom_event_name,
-                    },
-                    billing_event: 'IMPRESSIONS',
-                    bid_strategy: 'LOWEST_COST_WITHOUT_CAP',
-                    lifetime_budget: 1000000,
-                    end_time: '2023-12-31 23:59:59 PDT',
-                    targeting: {
-                        geo_locations: { countries: ['US'] }
-                    },
-                    access_token: this.state.access_token,
-                }
-
-                axios.post("https://graph.facebook.com/v16.0/act_" + this.state.ad_account_id + "/adsets", adset_data, {headers})
-                    .then(response => {
-                        this.setState({ creating_campaign: 'Campaign created, please go to your Ads Manager to edit and publish.' });
-                    })
-
-			})
-			.catch(error => {
-                // Error
-                console.log(error)
-			});
 	}
 
 	render() {
@@ -84,14 +116,14 @@ class Page extends Component {
                 <form className="form">
                     <div className="entry">
                         <label>Ad Account ID:</label>
-                        <input type="text" id="ad_account_id" value={this.state.ad_account_id} onChange={this.handleChange} />
+                        <input type="number" id="ad_account_id" value={this.state.ad_account_id} onChange={this.handleChange} />
                     </div>
 
                     <br/><br/><br/><br/>
 
                     <div className="entry">
                         <label>Pixel ID:</label>
-                        <input type="text" id="pixel_id" value={this.state.pixel_id} onChange={this.handleChange} />
+                        <input type="number" id="pixel_id" value={this.state.pixel_id} onChange={this.handleChange} />
                     </div>
 
                     <br/><br/><br/><br/>
@@ -125,9 +157,18 @@ class Page extends Component {
 
                     <br/><br/><br/><br/>
 
+                    {this.state.validEntries && <p>{this.state.invalidMessage}</p>}
+
                     {this.state.creating_campaign && <p>{this.state.creating_campaign}</p>}
 
                     <button className="button" onClick={this.handleSubmit}>Create Campaign</button>
+
+                    <br/><br/>
+
+                    <div className='errorMessage'> 
+                        {this.state.errorRequest && <p>{this.state.errorMessage}</p>}
+                    </div>
+
                 </form>
 			</>
 		);
