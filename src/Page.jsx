@@ -42,7 +42,6 @@ class Page extends Component {
         } else {
             return true;
         }
-            
     }
 
 	handleSubmit = async (event) => {
@@ -78,7 +77,7 @@ class Page extends Component {
                         },
                         billing_event: 'IMPRESSIONS',
                         bid_strategy: 'LOWEST_COST_WITHOUT_CAP',
-                        lifetime_budget: 1000000,
+                        lifetime_budget: 1000,
                         end_time: '2023-12-31 23:59:59 PDT',
                         targeting: {
                             geo_locations: { countries: ['US'] }
@@ -97,7 +96,6 @@ class Page extends Component {
                             this.setState({ errorRequest: true })
                             this.setState({ errorMessage: error })
                         })
-
                 })
                 .catch(error => {
                     // Error
@@ -138,7 +136,7 @@ class Page extends Component {
                             <option value="SUBSCRIBE">SUBSCRIBE</option>
                             <option value="OTHER">OTHER</option>
                         </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        {this.state.event_name === 'OTHER' && <input style={{'width': '45%'}} type="text" id="custom_event_name" placeholder='Please enter the exact custom event name' value={this.state.custom_event_name} onChange={this.handleChange} /> }
+                        {this.state.event_name === 'OTHER' && <input style={{'width': '45%'}} type="text" id="custom_event_name" placeholder='Copy & Paste the Custom Event Name from Events Manager' value={this.state.custom_event_name} onChange={this.handleChange} /> }
                     </div>
 
                     <br/><br/><br/><br/>
