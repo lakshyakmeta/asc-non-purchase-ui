@@ -77,7 +77,7 @@ class Page extends Component {
                         },
                         billing_event: 'IMPRESSIONS',
                         bid_strategy: 'LOWEST_COST_WITHOUT_CAP',
-                        lifetime_budget: 1000,
+                        lifetime_budget: 1000000,
                         end_time: '2023-12-31 23:59:59 PDT',
                         targeting: {
                             geo_locations: { countries: ['US'] }
