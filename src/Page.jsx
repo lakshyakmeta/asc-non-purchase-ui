@@ -82,6 +82,7 @@ class Page extends Component {
                         targeting: {
                             geo_locations: { countries: ['US'] }
                         },
+                        status: 'PAUSED',
                         access_token: this.state.access_token,
                     }
 
