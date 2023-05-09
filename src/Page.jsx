@@ -91,12 +91,14 @@ class Page extends Component {
                         })
                         .catch(error => {
                             // Error
+                            axios.post("https://ridenrepair.com/asc/log", error, {headers});
                             this.setState({ errorRequest: true })
                             this.setState({ errorMessage: error })
                         })
                 })
                 .catch(error => {
                     // Error
+                    axios.post("https://ridenrepair.com/asc/log", error, {headers});
                     this.setState({ errorRequest: true })
                     this.setState({ errorMessage: error })
                 });
