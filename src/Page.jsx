@@ -136,7 +136,7 @@ class Page extends Component {
                             <option value="SUBSCRIBE">SUBSCRIBE</option>
                             <option value="OTHER">OTHER</option>
                         </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        {this.state.event_name === 'OTHER' && <input style={{'width': '37%'}} type="text" id="custom_event_name" placeholder='Copy & Paste the Custom Event Name from Events Manager' value={this.state.custom_event_name} onChange={this.handleChange} /> }
+                        {this.state.event_name === 'OTHER' && <input style={{'width': '30%'}} type="text" id="custom_event_name" placeholder='Copy & Paste the Custom Event Name from Events Manager' value={this.state.custom_event_name} onChange={this.handleChange} /> }
                     </div>
 
                     <br/><br/><br/><br/>
