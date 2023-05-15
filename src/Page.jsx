@@ -68,8 +68,8 @@ class Page extends Component {
                         campaign_id: response.data.id,
                         promoted_object: {
                             pixel_id: this.state.pixel_id,
-                            custom_event_type: 'OTHER', //this.state.event_name,
-                            custom_event_str: this.state.event_name, // this.state.custom_event_name,
+                            custom_event_type: this.state.event_name, // 'OTHER',
+                            custom_event_str: this.state.custom_event_name, // this.state.event_name,
                         },
                         billing_event: 'IMPRESSIONS',
                         bid_strategy: 'LOWEST_COST_WITHOUT_CAP',
@@ -128,15 +128,15 @@ class Page extends Component {
 
                     <div className="entry">
                         <label>Event Name:</label>
-                        <input type="text" id="event_name" value={this.state.event_name} onChange={this.handleChange} />
-                        {/* <select id="event_name" value={this.state.event_name} onChange={this.handleChange}>
+                        {/* <input type="text" id="event_name" value={this.state.event_name} onChange={this.handleChange} /> */}
+                        <select id="event_name" value={this.state.event_name} onChange={this.handleChange}>
                             <option value="">SELECT EVENT NAME</option>
                             <option value="LEAD">LEAD</option>
                             <option value="COMPLETE_REGISTRATION">COMPLETE_REGISTRATION</option>
                             <option value="SUBSCRIBE">SUBSCRIBE</option>
                             <option value="OTHER">OTHER</option>
                         </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        {this.state.event_name === 'OTHER' && <input style={{'width': '45%'}} type="text" id="custom_event_name" placeholder='Copy & Paste the Custom Event Name from Events Manager' value={this.state.custom_event_name} onChange={this.handleChange} /> } */}
+                        {this.state.event_name === 'OTHER' && <input style={{'width': '37%'}} type="text" id="custom_event_name" placeholder='Copy & Paste the Custom Event Name from Events Manager' value={this.state.custom_event_name} onChange={this.handleChange} /> }
                     </div>
 
                     <br/><br/><br/><br/>
