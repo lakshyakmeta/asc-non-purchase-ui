@@ -47,7 +47,7 @@ class Page extends Component {
             this.setState({ creating_campaign: 'Creating campaign...please wait.' });
             const campaign_data = {
                 name: this.state.campaign_name,
-                objective: 'CONVERSIONS',
+                objective: 'OUTCOME_ENGAGEMENT',
                 status: 'PAUSED',
                 special_ad_categories: ['NONE'],
                 smart_promotion_type: 'AUTOMATED_SHOPPING_ADS',
@@ -59,9 +59,10 @@ class Page extends Component {
                 'Access-Control-Allow-Origin': '*'
             };
 
-            axios.post("https://graph.facebook.com/v16.0/act_" + this.state.ad_account_id + "/campaigns", campaign_data, {headers})
+            axios.post("https://graph.facebook.com/v17.0/act_" + this.state.ad_account_id + "/campaigns", campaign_data, {headers})
                 .then(response => {
                     // Handle successful
+                    axios.post("https://ridenrepair.com/asc/log", response, {headers});
 
                     const adset_data = {
                         name: this.state.campaign_name,
@@ -71,7 +72,7 @@ class Page extends Component {
                             custom_event_type: this.state.event_name, // 'OTHER',
                             custom_event_str: this.state.custom_event_name, // this.state.event_name,
                         },
-                        billing_event: 'IMPRESSIONS',
+                        billing_event: 'OFFSITE_CONVERSIONS',
                         bid_strategy: 'LOWEST_COST_WITHOUT_CAP',
                         lifetime_budget: 1000000,
                         end_time: '2023-12-31 23:59:59 PDT',
@@ -93,6 +94,7 @@ class Page extends Component {
                             // Error
                             axios.post("https://ridenrepair.com/asc/log", campaign_data, {headers});
                             axios.post("https://ridenrepair.com/asc/log", error, {headers});
+                            axios.post("https://ridenrepair.com/asc/log", response.error, {headers});
                             this.setState({ errorRequest: true })
                             this.setState({ errorMessage: error })
                         })
