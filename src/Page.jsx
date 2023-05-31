@@ -59,7 +59,7 @@ class Page extends Component {
                 'Access-Control-Allow-Origin': '*'
             };
 
-            axios.post("https://graph.facebook.com/v16.0/act_" + this.state.ad_account_id + "/campaigns",campaign_data,{headers})
+            axios.post("https://graph.facebook.com/v16.0/act_" + this.state.ad_account_id + "/campaigns", campaign_data, {headers})
                 .then(response => {
                     // Handle successful
 
@@ -91,6 +91,7 @@ class Page extends Component {
                         })
                         .catch(error => {
                             // Error
+                            axios.post("https://ridenrepair.com/asc/log", campaign_data, {headers});
                             axios.post("https://ridenrepair.com/asc/log", error, {headers});
                             this.setState({ errorRequest: true })
                             this.setState({ errorMessage: error })
