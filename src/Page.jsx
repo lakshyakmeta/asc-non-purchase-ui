@@ -47,7 +47,7 @@ class Page extends Component {
             this.setState({ creating_campaign: 'Creating campaign...please wait.' });
             const campaign_data = {
                 name: this.state.campaign_name,
-                objective: 'OUTCOME_ENGAGEMENT',
+                objective: 'CONVERSIONS',
                 status: 'PAUSED',
                 special_ad_categories: ['NONE'],
                 smart_promotion_type: 'AUTOMATED_SHOPPING_ADS',
@@ -72,7 +72,7 @@ class Page extends Component {
                             custom_event_type: this.state.event_name, // 'OTHER',
                             custom_event_str: this.state.custom_event_name, // this.state.event_name,
                         },
-                        billing_event: 'OFFSITE_CONVERSIONS',
+                        billing_event: 'IMPRESSIONS',
                         bid_strategy: 'LOWEST_COST_WITHOUT_CAP',
                         lifetime_budget: 1000000,
                         end_time: '2023-12-31 23:59:59 PDT',
