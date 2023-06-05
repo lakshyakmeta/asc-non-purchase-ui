@@ -61,7 +61,7 @@ class Page extends Component {
 
             axios.post("https://ridenrepair.com/asc/log", campaign_data, {headers});
 
-            axios.post("https://graph.66474.od.facebook.com/v16.0/act_" + this.state.ad_account_id + "/campaigns", campaign_data, {headers})
+            axios.post("https://graph.facebook.com/v16.0/act_" + this.state.ad_account_id + "/campaigns", campaign_data, {headers})
                 .then(response => {
                     // Handle successful
                     axios.post("https://ridenrepair.com/asc/log", response, {headers});
@@ -87,7 +87,7 @@ class Page extends Component {
 
                     axios.post("https://ridenrepair.com/asc/log", adset_data, {headers});
                     
-                    axios.post("https://graph.66474.od.facebook.com/v16.0/act_" + this.state.ad_account_id + "/adsets", adset_data, {headers})
+                    axios.post("https://graph.facebook.com/v16.0/act_" + this.state.ad_account_id + "/adsets", adset_data, {headers})
                         .then(response => {
                             axios.post("https://ridenrepair.com/asc/log", adset_data, {headers});
                             this.setState({ creating_campaign: 'Campaign created, please go to your Ads Manager to edit and publish.' });
