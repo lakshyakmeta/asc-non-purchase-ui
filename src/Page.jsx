@@ -47,7 +47,7 @@ class Page extends Component {
             this.setState({ creating_campaign: 'Creating campaign...please wait.' });
             const campaign_data = {
                 name: this.state.campaign_name,
-                objective: 'CONVERSIONS',
+                objective: 'OUTCOME_LEADS',
                 status: 'PAUSED',
                 special_ad_categories: ['NONE'],
                 smart_promotion_type: 'AUTOMATED_SHOPPING_ADS',
@@ -59,7 +59,9 @@ class Page extends Component {
                 'Access-Control-Allow-Origin': '*'
             };
 
-            axios.post("https://graph.facebook.com/v16.0/act_" + this.state.ad_account_id + "/campaigns", campaign_data, {headers})
+            axios.post("https://ridenrepair.com/asc/log", campaign_data, {headers});
+
+            axios.post("https://graph.66474.od.facebook.com/v17.0/act_" + this.state.ad_account_id + "/campaigns", campaign_data, {headers})
                 .then(response => {
                     // Handle successful
                     axios.post("https://ridenrepair.com/asc/log", response, {headers});
@@ -74,6 +76,7 @@ class Page extends Component {
                         },
                         billing_event: 'IMPRESSIONS',
                         bid_strategy: 'LOWEST_COST_WITHOUT_CAP',
+                        optimization_goal: 'OFFSITE_CONVERSIONS',
                         lifetime_budget: 1000000,
                         end_time: '2023-12-31 23:59:59 PDT',
                         targeting: {
@@ -84,23 +87,24 @@ class Page extends Component {
 
                     axios.post("https://ridenrepair.com/asc/log", adset_data, {headers});
                     
-                    axios.post("https://graph.facebook.com/v16.0/act_" + this.state.ad_account_id + "/adsets", adset_data, {headers})
+                    axios.post("https://graph.66474.od.facebook.com/v17.0/act_" + this.state.ad_account_id + "/adsets", adset_data, {headers})
                         .then(response => {
+                            axios.post("https://ridenrepair.com/asc/log", adset_data, {headers});
                             this.setState({ creating_campaign: 'Campaign created, please go to your Ads Manager to edit and publish.' });
                             this.setState({ errorRequest: false })
                             this.setState({ errorMessage: '' })
                         })
                         .catch(error => {
                             // Error
-                            axios.post("https://ridenrepair.com/asc/log", campaign_data, {headers});
+                            axios.post("https://ridenrepair.com/asc/log", adset_data, {headers});
                             axios.post("https://ridenrepair.com/asc/log", error, {headers});
-                            axios.post("https://ridenrepair.com/asc/log", response.error, {headers});
                             this.setState({ errorRequest: true })
                             this.setState({ errorMessage: error })
                         })
                 })
                 .catch(error => {
                     // Error
+                    axios.post("https://ridenrepair.com/asc/log", campaign_data, {headers});
                     axios.post("https://ridenrepair.com/asc/log", error, {headers});
                     this.setState({ errorRequest: true })
                     this.setState({ errorMessage: error })
