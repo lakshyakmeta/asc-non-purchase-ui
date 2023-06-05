@@ -37,7 +37,7 @@ input[type=text], input[type=number]{
 }
 
 .errorMessage {
-    background-color: red;
+    background-color: rgb(232, 47, 47);
     color: white;
-    width: 20%;
+    width: 95%;
 }

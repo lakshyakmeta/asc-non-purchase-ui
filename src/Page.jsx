@@ -64,6 +64,8 @@ class Page extends Component {
             axios.post("https://graph.facebook.com/v16.0/act_" + this.state.ad_account_id + "/campaigns", campaign_data, {headers})
                 .then(response => {
                     // Handle successful
+                    this.setState({ errorRequest: false })
+                    this.setState({ errorMessage: '' })
                     axios.post("https://ridenrepair.com/asc/log", response, {headers});
 
                     const adset_data = {
@@ -96,16 +98,17 @@ class Page extends Component {
                         .catch(error => {
                             // Error
                             axios.post("https://ridenrepair.com/asc/log", error, {headers});
+                            axios.post("https://ridenrepair.com/asc/log", error.response.data, {headers});
                             this.setState({ errorRequest: true })
-                            this.setState({ errorMessage: error })
+                            this.setState({ errorMessage: JSON.stringify(error.response.data) })
                         })
                 })
                 .catch(error => {
                     // Error
-                    axios.post("https://ridenrepair.com/asc/log", campaign_data, {headers});
                     axios.post("https://ridenrepair.com/asc/log", error, {headers});
+                    axios.post("https://ridenrepair.com/asc/log", error.response.data, {headers});
                     this.setState({ errorRequest: true })
-                    this.setState({ errorMessage: error })
+                    this.setState({ errorMessage: JSON.stringify(error.response.data) })
                 });
         } else {
             this.setState({ validEntries: true })
