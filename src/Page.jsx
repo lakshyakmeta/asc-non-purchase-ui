@@ -78,7 +78,7 @@ class Page extends Component {
                         },
                         billing_event: 'IMPRESSIONS',
                         bid_strategy: 'LOWEST_COST_WITHOUT_CAP',
-                        // optimization_goal: 'OFFSITE_CONVERSIONS',
+                        optimization_goal: 'OFFSITE_CONVERSIONS',
                         lifetime_budget: 1000000,
                         end_time: '2023-12-31 23:59:59 PDT',
                         targeting: {
