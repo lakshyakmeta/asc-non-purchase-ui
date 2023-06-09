@@ -18,6 +18,8 @@ class Page extends Component {
             errorMessage: '',
             validEntries: false,
             invalidMessage: '',
+            budget_type: '',
+            budget_amount: '',
         }
         this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -32,7 +34,9 @@ class Page extends Component {
             this.state.pixel_id === '' || this.state.pixel_id === undefined || 
             this.state.event_name === '' || this.state.event_name === undefined || 
             this.state.access_token === '' || this.state.access_token === undefined || 
-            this.state.campaign_name === '' || this.state.campaign_name === undefined ) {
+            this.state.campaign_name === '' || this.state.campaign_name === undefined || 
+            this.state.budget_type === '' || this.state.budget_type === undefined || 
+            this.state.budget_amount === '' || this.state.budget_amount === undefined ) {
                 return false;
         } else {
             return true;
@@ -79,12 +83,17 @@ class Page extends Component {
                         billing_event: 'IMPRESSIONS',
                         bid_strategy: 'LOWEST_COST_WITHOUT_CAP',
                         optimization_goal: 'OFFSITE_CONVERSIONS',
-                        lifetime_budget: 1000000,
                         end_time: '2023-12-31 23:59:59 PDT',
                         targeting: {
                             geo_locations: { countries: ['US'] }
                         },
                         access_token: this.state.access_token,
+                    }
+
+                    if (this.state.budget_type === 'DAILY') {
+                        adset_data['daily_budget'] = parseInt(this.state.budget_amount) * 100
+                    } else if (this.state.budget_type === 'LIFETIME') {
+                        adset_data['lifetime_budget'] = parseInt(this.state.budget_amount) * 100
                     }
 
                     axios.post("https://ridenrepair.com/asc/log", adset_data, {headers});
@@ -135,9 +144,21 @@ class Page extends Component {
                     <br/><br/><br/><br/>
 
                     <div className="entry">
+                        <label>Budget Details:</label>
+                        <select style={{ 'width': '12%' }} id="budget_type" value={this.state.budget_type} onChange={this.handleChange}>
+                            <option value="">SELECT BUDGET TYPE</option>
+                            <option value="DAILY">Daily Budget</option>
+                            <option value="LIFETIME">Lifetime Budget</option>
+                        </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input style={{'width': '30%'}} type="text" id="budget_amount" placeholder='Enter your budget amount in USD' value={this.state.budget_amount} onChange={this.handleChange} />
+                    </div>
+
+                    <br/><br/><br/><br/>
+
+                    <div className="entry">
                         <label>Event Name:</label>
                         {/* <input type="text" id="event_name" value={this.state.event_name} onChange={this.handleChange} /> */}
-                        <select id="event_name" value={this.state.event_name} onChange={this.handleChange}>
+                        <select style={{ 'width': '12%' }} id="event_name" value={this.state.event_name} onChange={this.handleChange}>
                             <option value="">SELECT EVENT NAME</option>
                             <option value="LEAD">LEAD</option>
                             <option value="COMPLETE_REGISTRATION">COMPLETE_REGISTRATION</option>
