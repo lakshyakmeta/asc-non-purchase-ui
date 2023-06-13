@@ -199,7 +199,7 @@ class Page extends Component {
                     <br/><br/><br/><br/>
 
                     <div className="entry">
-                        <label>Attribution Spec:</label>
+                        <label>Attribution Window:</label>
                         <select style={{ 'width': '20%' }} id="attribution_setting" value={this.state.attribution_setting} onChange={this.handleChange}>
                             <option value="">SELECT ATTRIBUTION TYPE</option>
                             <option value="1dc_1dv">1 day click and 1 day view</option>
