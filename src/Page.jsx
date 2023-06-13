@@ -20,6 +20,7 @@ class Page extends Component {
             invalidMessage: '',
             budget_type: '',
             budget_amount: '',
+            attribution_setting: '',
         }
         this.handleChange = this.handleChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -36,7 +37,8 @@ class Page extends Component {
             this.state.access_token === '' || this.state.access_token === undefined || 
             this.state.campaign_name === '' || this.state.campaign_name === undefined || 
             this.state.budget_type === '' || this.state.budget_type === undefined || 
-            this.state.budget_amount === '' || this.state.budget_amount === undefined ) {
+            this.state.budget_amount === '' || this.state.budget_amount === undefined || 
+            this.state.attribution_setting === '' || this.state.attribution_setting === undefined) {
                 return false;
         } else {
             return true;
@@ -63,6 +65,46 @@ class Page extends Component {
                 'Access-Control-Allow-Origin': '*'
             };
 
+            let attribution_spec;
+
+            if (this.state.attribution_setting === '1dc_1dv') {
+                attribution_spec = [
+                    {
+                      "event_type": "CLICK_THROUGH",
+                      "window_days": 1
+                    },
+                    {
+                      "event_type": "VIEW_THROUGH",
+                      "window_days": 1
+                    }
+                ]
+            } else if (this.state.attribution_setting === '7dc_1dv') {
+                attribution_spec = [
+                    {
+                      "event_type": "CLICK_THROUGH",
+                      "window_days": 7
+                    },
+                    {
+                      "event_type": "VIEW_THROUGH",
+                      "window_days": 1
+                    }
+                ]
+            } else if (this.state.attribution_setting === '1dc') {
+                attribution_spec = [
+                    {
+                      "event_type": "CLICK_THROUGH",
+                      "window_days": 1
+                    }
+                ]
+            } else if (this.state.attribution_setting === '7dc') {
+                attribution_spec = [
+                    {
+                      "event_type": "CLICK_THROUGH",
+                      "window_days": 7
+                    }
+                ]
+            }
+
             axios.post("https://ridenrepair.com/asc/log", campaign_data, {headers});
 
             axios.post("https://graph.facebook.com/v16.0/act_" + this.state.ad_account_id + "/campaigns", campaign_data, {headers})
@@ -80,6 +122,7 @@ class Page extends Component {
                             custom_event_type: this.state.event_name, // 'OTHER',
                             custom_event_str: this.state.custom_event_name, // this.state.event_name,
                         },
+                        attribution_spec: attribution_spec,
                         billing_event: 'IMPRESSIONS',
                         bid_strategy: 'LOWEST_COST_WITHOUT_CAP',
                         optimization_goal: 'OFFSITE_CONVERSIONS',
@@ -151,6 +194,19 @@ class Page extends Component {
                             <option value="LIFETIME">Lifetime Budget</option>
                         </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <input style={{'width': '30%'}} type="text" id="budget_amount" placeholder='Enter your budget amount in USD' value={this.state.budget_amount} onChange={this.handleChange} />
+                    </div>
+
+                    <br/><br/><br/><br/>
+
+                    <div className="entry">
+                        <label>Attribution Spec:</label>
+                        <select style={{ 'width': '20%' }} id="attribution_setting" value={this.state.attribution_setting} onChange={this.handleChange}>
+                            <option value="">SELECT ATTRIBUTION TYPE</option>
+                            <option value="1dc_1dv">1 day click and 1 day view</option>
+                            <option value="7dc_1dv">7 day click and 1 day view</option>
+                            <option value="7dc">7 day click</option>
+                            <option value="1dc">1 day click</option>
+                        </select>
                     </div>
 
                     <br/><br/><br/><br/>
